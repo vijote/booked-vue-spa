@@ -46,13 +46,15 @@
                 this.loading = true;
                 const apiUrl = 'https://booked-api.herokuapp.com/api/users/sendEmail';
                     console.log('starting...');
+                    // try to send the recover password email to the provided email
                     const response = await axios.post(apiUrl, {email: this.email});
-                    console.log(response);
                     if(response.data.success){
+                        // if there is a success means the email is registered, and the email will be sent
                         this.msg = 'Email sent!';
                         this.msgClass = 'alert alert-success';
                         console.log('finished!');
                     } else{
+                        // if there is no success means the email is not registered, so this message will be shown
                         this.msg = 'That email is not registered.';
                         this.msgClass = 'alert alert-danger';
                     }

@@ -36,47 +36,55 @@
         data(){
             return {
                 details: {},
-                hasBook: false,
+                hasBook: false, // if the user purchased this book
                 loading: false
             }
         },
         created: async function(){
             this.loading = true;
             const bookId = this.$route.params.bookId;
+            // get the book using that id
             const response = await axios.get(`https://booked-api.herokuapp.com/api/books/${bookId}`);
             if(this.$parent.isLogged){
+                // if user is logged
                 try {
+                    // check if the logged user purchased this book
                     const hasBook = await axios.post(`https://booked-api.herokuapp.com/api/books/verify`, {
                         bookId: response.data.id, userId: this.$parent.isLogged
                     });
                     if(hasBook.data.success){
+                        // if this user purchased it, set hasBook to true
                         this.hasBook = true;
                     }
-                } catch (error) {
+                } catch (error) { // if there is an error, log it
                     console.log(error);
                 }
             }
-            this.details = response.data;
+            this.details = response.data; // set the response of the api to 'details'
             this.loading = false;
         },
         computed: {
-            formattedDate(){
+            formattedDate(){ // format the date more simple
                 const bookDate = new Date(this.details.updatedAt);
                 const month = bookDate.getMonth();
                 const day = bookDate.getDay();
                 const year = bookDate.getFullYear();
                 return `${month}-${day}-${year}`;
             },
-            isInCart(){
+            isInCart(){ // check if the current book is already in the cart
+                // first, check if there is a cart
                 const cart = JSON.parse(localStorage.getItem('cart'));
                 if (cart){
+                    // if there is a cart, try to find this book in it
                     return cart.find(item => item.id === this.details.id);
-                } else return false;
+                } else return false; // return false if it is't there
             }
         },
         methods: {
-            addToCart(redirect=false){
+            addToCart(redirect=false){ // add this book to the cart
+                // check if there is a cart
                 const rawCart = localStorage.getItem('cart');
+                // and parse it
                 let cart = JSON.parse(rawCart);
 
                 // if there isn't a cart, create it
@@ -90,12 +98,14 @@
                     localStorage.setItem('cart', JSON.stringify(cart));
                 }
                 if(redirect){
+                    // check if the 'redirect' parameter is present
+                    // if it is, redirect to the cart
                     this.$router.push('/cart');
                 }
             },
             goToPayment(){
-                this.addToCart();
-                this.$router.push({name: 'Payment'});
+                this.addToCart(); // first, add it to the cart, without redirecting to the cart
+                this.$router.push({name: 'Payment'}); // and go to the payment
             }
         }
     }

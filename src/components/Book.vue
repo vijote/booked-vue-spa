@@ -23,7 +23,7 @@
             element: Object
         },
         computed: {
-            formatDescription(){
+            formatDescription(){ // not used
                 const arrayDesc = this.element.description.split('');
                 const newDescArray = arrayDesc.splice(0,80);
                 return newDescArray.join('')+'...';

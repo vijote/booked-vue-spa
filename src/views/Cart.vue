@@ -52,39 +52,44 @@
 </template>
 
 <script>
-    // import axios from 'axios';
-
     export default {
         name: 'Checkout',
         data(){
             return {
                 loading: false,
-                items: []
+                items: [] // all the items in the cart
             }
         },
         methods: {
             deleteItem(item){
-                console.log('deleting...', item);
+                // generate a new array without the provided item
                 const newItems = this.items.filter(i => i !== item);
+                // save it on localStorage
                 localStorage.setItem('cart', JSON.stringify(newItems));
+                // and set it to 'items'
                 this.items = newItems;
             },
             goToPayment(){
+                // go to the payment page
                 this.$router.push('/payment');
             },
             calculateTotal(){
+                // if there is an item
                 if(this.items.length > 0){
                     let total = 0;
+                    // add all its prices
                     for(let item of this.items){
                         total += item.price;
                     }
-                    return total;
+                    return total; // and return it
                 }
             }
         },
         created: async function(){
             this.loading = true;
+            // get the cart from localstorage
             const rawCart = localStorage.getItem('cart');
+            // if it isn't null, parse it and set it to 'items'
             if(rawCart) this.items = JSON.parse(rawCart);
             this.loading = false;
         }

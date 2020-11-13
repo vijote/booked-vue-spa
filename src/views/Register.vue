@@ -37,7 +37,7 @@
             return {
                 email: '',
                 password: '',
-                result: {},
+                result: {}, // here the registered user will be stored temporarily
                 hasMinChars: false,
                 hasUpper: false,
                 hasNumber: false,
@@ -51,47 +51,46 @@
             }
         },
         methods: {
-            getCart(){
-                return JSON.parse(localStorage.getItem('cart'));
-            },
             registerUser: async function(){
                 const apiUrl = 'https://booked-api.herokuapp.com/api/users/register';
                 try{
                     console.log('sending register request...');
-                    this.result = await axios.post(apiUrl, {
+                    // the registered user will be stored on 'result'
+                    this.result = await axios.post(apiUrl, { // the following object will be sent for registration
                         email: this.email,
                         password: this.password,
-                        books: localStorage.getItem('cart')
+                        books: localStorage.getItem('cart') // all the books from the cart will be purchased from this user
                     });
+                    // after the registration is complete, empty the cart
                     localStorage.removeItem('cart');
+                    // and set this device as registered
                     localStorage.setItem('device', this.result.data.device)
                     console.log('finished!');
+                    // finally, redirect the user to the login page, with the success message
                     this.$router.push({name: 'Login', params: {msg: 'Account created! Try to log in :)', msgClass: 'alert alert-success'}})
-                }catch(error){
+                }catch(error){ // if there are errors, log them in the console
                     console.log(error);
                 }
             }
         },
         watch: {
-            password: function(){
+            password: function(){ // check if the password passes all these tests
                 // ==== DEFINITION OF ALL REGEX ====
-                const minChars = new RegExp('(?=.{8,})');
-                const specialChars = new RegExp('(?=.*[!@#$%^&*])');
-                const upperChars = new RegExp('(?=.*[A-Z])');
-                const numbers = new RegExp('(?=.*[0-9])');
+                const minChars = new RegExp('(?=.{8,})'); // has at least 8 chars
+                const specialChars = new RegExp('(?=.*[!@#$%^&*])'); // has special chars
+                const upperChars = new RegExp('(?=.*[A-Z])'); // has upper chars
+                const numbers = new RegExp('(?=.*[0-9])'); // has numbers
 
-                console.log('password changed!');
-
-                if(minChars.test(this.password)) this.hasMinChars = true;
+                if(minChars.test(this.password)) this.hasMinChars = true; // true if has 8 chars or more
                 else this.hasMinChars = false;
 
-                if(specialChars.test(this.password)) this.hasSpecial = true;
+                if(specialChars.test(this.password)) this.hasSpecial = true; // true if has special chars
                 else this.hasSpecial = false;
 
-                if(upperChars.test(this.password)) this.hasUpper = true;
+                if(upperChars.test(this.password)) this.hasUpper = true; // true if has upper chars
                 else this.hasUpper = false;
 
-                if(numbers.test(this.password)) this.hasNumber = true;
+                if(numbers.test(this.password)) this.hasNumber = true; // true if has numbers
                 else this.hasNumber = false;
             }
         }

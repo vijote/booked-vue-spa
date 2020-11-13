@@ -40,29 +40,32 @@
                 email: '',
                 password: '',
                 loading: false,
-                msg: undefined,
-                msgClass: undefined
+                msg: undefined, // error or success message
+                msgClass: undefined // styles for that message
             }
         },
         created(){
+            // if there are params present in the route, get them and set them to the following:
             this.msg = this.$route.params.msg;
             this.msgClass = this.$route.params.msgClass;
-            if(this.$parent.isLogged) this.$router.push('/');
+            if(this.$parent.isLogged) this.$router.push({name: 'Shop'}); // if the user is logged in, take it to the shop
         },
          methods: {
             logUserIn: async function(){
                 this.loading = true;
                 const apiUrl = 'https://booked-api.herokuapp.com/api/users/login';
                 try{
+                    // try to log the user with the provided data
                     const response = await axios.post(apiUrl, { email: this.email, password: this.password });
                     if(response.data.success){
+                        // if all went well save the token in localstorage
                         localStorage.setItem('logged', response.data.success);
-                        this.$router.push({name: 'Shop'});
-                        window.location.reload();
+                        this.$router.push({name: 'Shop'}); // then redirect it to the shop
+                        window.location.reload(); // and reload the page, in order to see the changes in the token
                     } else {
                         this.loading = false
-                        this.msg = 'Username or password is incorrect!';
-                        this.msgClass = 'alert alert-danger';
+                        this.msg = 'Username or password is incorrect!'; // message of error
+                        this.msgClass = 'alert alert-danger'; // styles for that message
                     }
                 }catch(error){
                     console.log(error);

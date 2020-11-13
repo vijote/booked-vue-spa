@@ -65,41 +65,44 @@
         name: 'Payment',
         data(){
             return {
-                items: [],
-                cardNumber: '',
+                items: [], // all the items from the cart
+                cardNumber: '', // the data of the card
                 expirationYear: '',
                 expirationMonth: '',
                 CVC: '',
-                msg: undefined,
+                msg: undefined, // messages of error and their styles
                 msgClass: undefined
             }
         },
-        created: async function(){
+        created: async function(){ // at the moment of creation of the component
+                // get the cart and parse it
                 const rawCart = localStorage.getItem('cart');
                 this.items = JSON.parse(rawCart);
         },
         methods: {
             calculateTotal(){
                 let total = 0;
+                // add all the prices of the books in the cart to the total
                 if(this.items.length > 0){
                     for(let item of this.items){
                         total += item.price;
                     }
                 }
-                return total;
-            },
-            checkData(){
-                const cardNum = this.cardNumber.length;
-                return cardNum;
+                return total; // and return it
             },
             goToRegister(){
+                // definition of all the requirements
                 const cardNumValid = this.cardNumber.length === 16;
                 const expYearValid = this.expirationYear !== '';
                 const expMonthValid = this.expirationMonth !== '';
                 const cvcValid = this.CVC.length === 3 || this.CVC.length === 4;
+
+                // if all these conditions are true
                 if(cardNumValid && expYearValid && expMonthValid && cvcValid){
+                    // then go to the register page
                     this.$router.push('/register');
                 } else {
+                    // else, tell the user that there are errors.
                     this.msg = 'There are errors in the form, please check it';
                     this.msgClass = 'alert alert-danger'
                 }

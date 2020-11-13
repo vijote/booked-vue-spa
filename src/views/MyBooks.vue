@@ -33,15 +33,16 @@
         name: 'MyBooks',
         data(){
             return {
-                books: [],
+                books: [], // all the books this user purchased
                 loading: false
             }
         },
         created: async function(){
             this.loading = true;
             const apiUrl = 'https://booked-api.herokuapp.com/api/books/getBooks';
+            // find all the books this user purchased
             let allBooks = await axios.post(apiUrl, {userId: this.$parent.isLogged});
-            this.books = allBooks.data;
+            this.books = allBooks.data; // and save them in 'books'
             this.loading = false;
         }
     }

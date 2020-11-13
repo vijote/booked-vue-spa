@@ -26,16 +26,19 @@ export default {
     return {
       books: [],
       loading: false,
-      msg: undefined,
-      msgClass: undefined
+      msg: undefined, // success or error messages
+      msgClass: undefined // styles for those messages
     }
   },
   created: async function(){
-    this.msg = this.$route.params.msg;
+    // check if there are messages in the url and set them
+    this.msg = this.$route.params.msg; 
     this.msgClass = this.$route.params.msgClass;
     this.loading = true;
     const apiUrl = 'https://booked-api.herokuapp.com/api/books';
+    // get all the existing books
     const response = await axios.get(apiUrl);
+    // ave them in the books property
     this.books = response.data;
     this.loading = false;
   }

@@ -7,10 +7,6 @@
             <li class="nav-item ml-4 ml-md-5">
               <router-link to="/">Shop</router-link>
             </li>
-            <!-- <div class="user-menu ml-md-5" v-if='this.$parent.isLogged'>
-              <i class="fas fa-user-circle mr-2"></i>
-              <i class="fas fa-chevron-down"></i>
-            </div> -->
             <li class="nav-item dropdown ml-4 ml-md-5" v-if='this.$parent.isLogged'>
               <a class="nav-link dropdown-toggle p-0" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-user-circle mr-2"></i>
